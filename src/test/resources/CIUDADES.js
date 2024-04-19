@@ -1,0 +1,17 @@
+db.ciudades.insertMany([
+    {
+          codDepartamento:"1",
+          codCiudad:"1",
+          nombre:"Armenia"
+    },
+    {
+        codDepartamento:"1",
+        codCiudad:"2",
+        nombre:"Circacia"
+    },
+    {
+        codDepartamento:"2",
+        codCiudad:"1",
+        nombre:"Ibague"
+    }
+]);

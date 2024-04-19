@@ -1,0 +1,10 @@
+db.departamentos.insertMany([
+    {
+          codDepartamento:"1",
+          nombre:"Quindio"
+    },
+    {
+        codDepartamento:"2",
+        nombre:"Tolima"
+    }
+]);
