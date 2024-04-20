@@ -247,8 +247,8 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
             throw new IOException("No se encontro el usuario con la identificación:" + identificacionProp);
         }
 
-        Negocio negocio = negocioOptional.get();
-        return negocio;
+       // Negocio negocio = negocioOptional.get();
+        return null;
     }
     @Override
     public void cambiarContrasena(CambioPasswordDTO cP) throws Exception {
