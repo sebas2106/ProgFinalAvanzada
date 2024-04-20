@@ -1,11 +1,14 @@
 package co.edu.uniquindio.ProyectoFinal.controladores;
 
 import co.edu.uniquindio.ProyectoFinal.DTO.*;
+import co.edu.uniquindio.ProyectoFinal.model.Negocio;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.IUsuarioServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -55,5 +58,11 @@ public class UsuarioControlador {
         usuarioServicio.removeFavorito(datos);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Se removió exitosamente")
         );
+    }
+
+    @GetMapping("/obtener-NegociosFav/{listar}")
+    public ResponseEntity<MensajeDTO<List<DetalleNegocioDTO>>> obtenerNegociosFav(@PathVariable String identificacionProp)) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                usuarioServicio.obtenerNegociosFav(identificacionProp) ) );
     }
 }

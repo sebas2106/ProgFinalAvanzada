@@ -3,6 +3,7 @@ package co.edu.uniquindio.ProyectoFinal.services.interfaces;
 import co.edu.uniquindio.ProyectoFinal.DTO.*;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface IUsuarioServicio {
 
@@ -18,6 +19,8 @@ public interface IUsuarioServicio {
     String removeFavorito(QuitarLugarFavDTO q)throws Exception;
     void recuperarContrasena(RecuperacionPasswordDTO rP)throws Exception;
     void cambiarContrasena(CambioPasswordDTO cP)throws Exception;
+
+    List<DetalleNegocioDTO>obtenerNegociosFav(String identificacionProp)throws Exception;
 
     DetalleUsuarioDTO obtenerUsuario(String identificacion) throws IOException;
 }

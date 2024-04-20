@@ -1,15 +1,17 @@
 package co.edu.uniquindio.ProyectoFinal.controladores;
 
 import co.edu.uniquindio.ProyectoFinal.DTO.*;
+import co.edu.uniquindio.ProyectoFinal.model.Negocio;
+import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRegistro;
+import co.edu.uniquindio.ProyectoFinal.model.enums.TipoNegocio;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.INegocioServicio;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.IUsuarioServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/negocios")
@@ -35,5 +37,33 @@ public class NegocioControlador {
         negocioServicio.eliminarNegocio(eliminarLugar);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Usuario registrado correctamente")
         );
+    }
+
+    @GetMapping("/obtener-Negocio-Id/{id}")
+    public ResponseEntity<MensajeDTO<Negocio>> obtenerNegocio(@PathVariable String id) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                negocioServicio.obtenerNegocio(id) ) );
+    }
+    @GetMapping("/obtener-Negocio-Nombre/{nombre}")
+    public ResponseEntity<MensajeDTO<List<Negocio>>> buscarNegociosNomb(@PathVariable String nombre) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                negocioServicio.buscarNegociosNomb(nombre) ) );
+    }
+
+    @GetMapping("/obtener-Negocio-EstadoNegocio/{estadoReg}")
+    public ResponseEntity<MensajeDTO<List<Negocio>>> filtrarPorEstado(@PathVariable EstadoRegistro estadoReg) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                negocioServicio.filtrarPorEstado(estadoReg) ) );
+    }
+
+    @GetMapping("/obtener-Negocio-TipoNegocio/{tipoNegocio}")
+    public ResponseEntity<MensajeDTO<List<Negocio>>> filtrarPorTipoNegocio(@PathVariable TipoNegocio tipoNegocio) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                negocioServicio.filtrarPorTipoNegocio(tipoNegocio) ) );
+    }
+    @GetMapping("/obtener-Negocio-EstadoNegocio/{listar}")
+    public ResponseEntity<MensajeDTO<List<Negocio>>> listarNegociosPropietario(@PathVariable ListarLugaresPropietarioDTO listar) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                negocioServicio.listarNegociosPropietario(listar) ) );
     }
 }

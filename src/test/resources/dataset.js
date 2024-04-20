@@ -1,7 +1,5 @@
-
 db.usuarios.insertOne(
     {
-
         identificacion: '1005094005',
         nombre: 'SEBASTIAN',
         fotoPerfil: 'Armenia',

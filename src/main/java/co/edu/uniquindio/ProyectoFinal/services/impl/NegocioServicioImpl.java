@@ -8,11 +8,13 @@ import co.edu.uniquindio.ProyectoFinal.model.Usuario;
 import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoActual;
 import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRegistro;
 import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRevision;
+import co.edu.uniquindio.ProyectoFinal.model.enums.TipoNegocio;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.INegocioServicio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,9 +23,11 @@ import java.util.Optional;
 public class NegocioServicioImpl implements INegocioServicio {
 
     private final NegocioRepo negocioRepo;
+    private final UsuarioRepos usuarioRepo;
 
-    public NegocioServicioImpl(NegocioRepo negocioRepo) {
+    public NegocioServicioImpl(NegocioRepo negocioRepo, UsuarioRepos usuarioRepo) {
         this.negocioRepo = negocioRepo;
+        this.usuarioRepo = usuarioRepo;
     }
 
     @Override
@@ -94,43 +98,65 @@ public class NegocioServicioImpl implements INegocioServicio {
     }
 
     @Override
-    public Negocio obtenerNegocio(ObtenerNegocioDTO oN) throws Exception {
-        Optional<Negocio> negocioOptional = negocioRepo.findById(oN.idNegocio());
+    public Negocio obtenerNegocio(String id) throws Exception {
+        Optional<Negocio> negocioOptional = negocioRepo.findById(id);
         if (negocioOptional.isEmpty()) {
-            throw new IOException("No se encontro el negocio con la identificación:" + oN.idNegocio());
+            throw new IOException("No se encontro el negocio con la identificación:" + id);
         }
         Negocio negocio = negocioOptional.get();
         return negocio;
     }
 
-    @Override
-    public void listarNegociosUsuario(String idUsuario) throws Exception {
-
-    }
 
     @Override
-    public List<Negocio> buscarNegociosNomb(BuscarLugarNomTipDistDTO bL) throws Exception {
-        Optional<List<Negocio>> negocioOptional = negocioRepo.findByNombre(bL.nombre());
+    public List<Negocio> buscarNegociosNomb(String nombre) throws Exception {
+        Optional<List<Negocio>> negocioOptional = negocioRepo.findByNombre(nombre);
         if (negocioOptional.isEmpty()) {
-            throw new IOException("No se encontro el negocio con la identificación:" + bL.nombre());
+            throw new IOException("No se encontro el negocio con la identificación:" + nombre);
         }
         List<Negocio> negocios = negocioOptional.get();
         return negocios;
     }
 
     @Override
-    public void filtrarPorEstado(EstadoRegistro estado) throws Exception {
-
+    public List<Negocio> filtrarPorEstado(EstadoRegistro estado) throws Exception {
+        Optional<List<Negocio>> negocioOptional = negocioRepo.findByEstadoRegistro(estado);
+        List<Negocio> negociosEncontrados=new ArrayList<>();
+       if (!negocioOptional.isEmpty()){
+           negociosEncontrados=negocioOptional.get();
+       }
+   return negociosEncontrados;
     }
 
     @Override
-    public void listarNegociosPropietario(ListarLugaresPropietarioDTO listar) throws Exception {
-
+    public List<Negocio> filtrarPorTipoNegocio(TipoNegocio tipoNegocio) throws Exception {
+        Optional<List<Negocio>> negocioOptional = negocioRepo.findByTipoNegocio(tipoNegocio);
+        List<Negocio> negociosEncontrados=new ArrayList<>();
+        if (!negocioOptional.isEmpty()){
+            negociosEncontrados=negocioOptional.get();
+        }
+        return negociosEncontrados;
     }
+
+    @Override
+    public List<Negocio> listarNegociosPropietario(ListarLugaresPropietarioDTO listar) throws Exception {
+        Optional<Usuario> usuarioOptional = usuarioRepo.findByIdentificacion(listar.idPropietario());
+        if (usuarioOptional.isEmpty()){
+            throw new Exception("No se encontraron usuarios con este Identificación");
+        }
+        Optional<List<Negocio>> negocioOptional = negocioRepo.findByCodCreador(listar.idPropietario());
+        List<Negocio> negociosEncontrados=new ArrayList<>();
+        if (!negocioOptional.isEmpty()){
+            negociosEncontrados=negocioOptional.get();
+        }
+        return negociosEncontrados;
+    }
+
+
 
     @Override
     public void solicitarRuta(SolicitarRutaDTO s) throws Exception {
-
+//se realiza cuando se trabaje el mapeado
     }
 
 

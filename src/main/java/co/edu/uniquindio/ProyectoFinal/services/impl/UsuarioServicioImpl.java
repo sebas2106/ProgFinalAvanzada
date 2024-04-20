@@ -241,6 +241,16 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     }
 
     @Override
+    public List<DetalleNegocioDTO> obtenerNegociosFav(String identificacionProp) throws Exception {
+        Optional<Usuario> usuarioOptional = usuarioRepo.findByIdentificacion(identificacionProp);
+        if (usuarioOptional.isEmpty()) {
+            throw new IOException("No se encontro el usuario con la identificación:" + identificacionProp);
+        }
+
+        Negocio negocio = negocioOptional.get();
+        return negocio;
+    }
+    @Override
     public void cambiarContrasena(CambioPasswordDTO cP) throws Exception {
 
     }
