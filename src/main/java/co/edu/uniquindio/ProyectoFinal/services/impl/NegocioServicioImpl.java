@@ -40,7 +40,6 @@ public class NegocioServicioImpl implements INegocioServicio {
         negocio.setNombre(cL.nombre());
         negocio.setDescripcion(cL.descripcion());
         negocio.setTipoNegocio(cL.tipoNegocio());
-        negocio.setListHorario(cL.listHorarios());
         negocio.setEstado(EstadoActual.CERRADO);
         negocio.setEstadoReg(EstadoRegistro.INACTIVO);
         negocio.setEstadoRevision(EstadoRevision.PENDIENTE);
@@ -71,6 +70,9 @@ public class NegocioServicioImpl implements INegocioServicio {
         negocio.setEstadoReg(EstadoRegistro.INACTIVO);
         negocio.setEstadoRevision(EstadoRevision.PENDIENTE);
 
+        negocio.setUbicacion(aL.ubicacion());
+        negocio.setListImagenes(aL.listImages());
+        negocio.setListTelefonos(aL.listTelefonos());
         //Se guarda en la base de datos y obtenemos el objeto registrado
         Negocio negocioActualizado = negocioRepo.save(negocio);
         //Retornamos el id (código) del cliente registrado
@@ -120,7 +122,7 @@ public class NegocioServicioImpl implements INegocioServicio {
 
     @Override
     public List<Negocio> filtrarPorEstado(EstadoRegistro estado) throws Exception {
-        Optional<List<Negocio>> negocioOptional = negocioRepo.findByEstadoRegistro(estado);
+        Optional<List<Negocio>> negocioOptional = negocioRepo.findByEstadoReg(estado);
         List<Negocio> negociosEncontrados=new ArrayList<>();
        if (!negocioOptional.isEmpty()){
            negociosEncontrados=negocioOptional.get();
@@ -139,12 +141,12 @@ public class NegocioServicioImpl implements INegocioServicio {
     }
 
     @Override
-    public List<Negocio> listarNegociosPropietario(ListarLugaresPropietarioDTO listar) throws Exception {
-        Optional<Usuario> usuarioOptional = usuarioRepo.findByIdentificacion(listar.idPropietario());
+    public List<Negocio> listarNegociosPropietario(String identificacion) throws Exception {
+        Optional<Usuario> usuarioOptional = usuarioRepo.findByIdentificacion(identificacion);
         if (usuarioOptional.isEmpty()){
             throw new Exception("No se encontraron usuarios con este Identificación");
         }
-        Optional<List<Negocio>> negocioOptional = negocioRepo.findByCodCreador(listar.idPropietario());
+        Optional<List<Negocio>> negocioOptional = negocioRepo.findByCodCreador(identificacion);
         List<Negocio> negociosEncontrados=new ArrayList<>();
         if (!negocioOptional.isEmpty()){
             negociosEncontrados=negocioOptional.get();

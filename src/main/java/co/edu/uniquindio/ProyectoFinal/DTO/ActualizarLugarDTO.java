@@ -14,12 +14,11 @@ public record ActualizarLugarDTO(
         @NotBlank  String cod,
         @NotBlank @Length(max = 100) String nombre,
         @NotBlank @Length(max = 2000) String descripcion,
-        @NotBlank TipoNegocio tipoNegocio,
+         TipoNegocio tipoNegocio,
         Ubicacion ubicacion,
-        List<Horario> listHorarios,
+
         List<String>listImages,
-        List<Calificacion> listCalificaciones,
-        List<Comentario> listComentarios,
+
         List<String> listTelefonos
 
 ) {

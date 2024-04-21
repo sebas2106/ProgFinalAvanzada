@@ -23,19 +23,19 @@ public class NegocioControlador {
     @PostMapping("/registrar-negocio")
     public ResponseEntity<MensajeDTO<String>> crearNegocio(@Valid @RequestBody CrearLugarDTO crearLugar)throws Exception{
         negocioServicio.crearNegocio(crearLugar);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Usuario registrado correctamente")
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Negocio registrado correctamente")
         );
     }
     @PostMapping("/editar-negocio")
     public ResponseEntity<MensajeDTO<String>> editarNegocio(@Valid @RequestBody ActualizarLugarDTO actualizarLugar)throws Exception{
         negocioServicio.actualizarNegocio(actualizarLugar);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Usuario registrado correctamente")
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Negocio actualizado correctamente")
         );
     }
     @PostMapping("/borrar-negocio")
     public ResponseEntity<MensajeDTO<String>> eliminarNegocio(@Valid @RequestBody EliminarLugarDTO eliminarLugar)throws Exception{
         negocioServicio.eliminarNegocio(eliminarLugar);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Usuario registrado correctamente")
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Negocio Eliminado correctamente")
         );
     }
 
@@ -61,9 +61,9 @@ public class NegocioControlador {
         return ResponseEntity.ok().body( new MensajeDTO<>(false,
                 negocioServicio.filtrarPorTipoNegocio(tipoNegocio) ) );
     }
-    @GetMapping("/obtener-Negocio-EstadoNegocio/{listar}")
-    public ResponseEntity<MensajeDTO<List<Negocio>>> listarNegociosPropietario(@PathVariable ListarLugaresPropietarioDTO listar) throws Exception{
+    @GetMapping("/obtener-Negocio-propietario/{identificacion}")
+    public ResponseEntity<MensajeDTO<List<Negocio>>> listarNegociosPropietario(@PathVariable String identificacion) throws Exception{
         return ResponseEntity.ok().body( new MensajeDTO<>(false,
-                negocioServicio.listarNegociosPropietario(listar) ) );
+                negocioServicio.listarNegociosPropietario(identificacion) ) );
     }
 }

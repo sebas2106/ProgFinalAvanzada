@@ -16,7 +16,7 @@ public interface INegocioServicio {
     List<Negocio> buscarNegociosNomb(String nombre)throws Exception;
     List<Negocio> filtrarPorEstado(EstadoRegistro estado)throws Exception;
     List<Negocio> filtrarPorTipoNegocio(TipoNegocio tipoNegocio)throws Exception;
-    List<Negocio> listarNegociosPropietario(ListarLugaresPropietarioDTO listar)throws Exception;
+    List<Negocio> listarNegociosPropietario(String identificacion)throws Exception;
     void solicitarRuta(SolicitarRutaDTO s)throws Exception;
 
 

@@ -14,12 +14,11 @@ public record CrearLugarDTO(
         @NotBlank @Length(max = 100) String codCreador,
         @NotBlank @Length(max = 100) String nombre,
         @NotBlank String descripcion,
-        @NotBlank TipoNegocio tipoNegocio,
+         TipoNegocio tipoNegocio,
         Ubicacion ubicacion,
-        List<Horario> listHorarios,
+
         List<String>listImages,
-        List<Calificacion> listCalificaciones,
-        List<Comentario> listComentarios,
+
         List<String> listTelefonos
 
 ) {
