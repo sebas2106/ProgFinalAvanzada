@@ -34,9 +34,17 @@ public class NegocioServicioImpl implements INegocioServicio {
     public String crearNegocio(CrearLugarDTO cL) throws Exception {
         //Se crea el objeto negocio
         Negocio negocio = new Negocio();
-
+        Optional<Usuario>usuarioOptional=usuarioRepo.findByIdentificacion(cL.codCreador());
+        if (usuarioOptional.isEmpty()){
+            throw new Exception("No se encuentra el usuario creador");
+        }
+        Usuario encontrado=usuarioOptional.get();
+        if(encontrado.getCuentaUsuario()==null){
+            throw new Exception("El usuario debe tener creada una cuenta");
+        }
         //Se le asignan sus campos
         negocio.setCodCreador(cL.codCreador());
+
         negocio.setNombre(cL.nombre());
         negocio.setDescripcion(cL.descripcion());
         negocio.setTipoNegocio(cL.tipoNegocio());
@@ -51,6 +59,9 @@ public class NegocioServicioImpl implements INegocioServicio {
         //Retornamos el id (código) del negocio registrado
         return negocioGuardado.getCodNegocio();
     }
+
+
+
 
     @Override
     public String actualizarNegocio(ActualizarLugarDTO aL) throws Exception {

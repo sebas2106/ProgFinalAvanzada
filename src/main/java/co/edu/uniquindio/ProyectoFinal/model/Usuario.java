@@ -28,6 +28,7 @@ public class Usuario implements Serializable {
     private String username;
     private String password;
     private String email; //actualizable
+    private Cuenta cuentaUsuario;
     private EstadoRegistro estadoRegistro;
     private TipoUsuario tipoUsuario;
     private List<String> listNegocioFavorito;

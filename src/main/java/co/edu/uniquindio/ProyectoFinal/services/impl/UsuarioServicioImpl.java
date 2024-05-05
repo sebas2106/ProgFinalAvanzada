@@ -250,6 +250,9 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
        // Negocio negocio = negocioOptional.get();
         return null;
     }
+
+
+
     @Override
     public void cambiarContrasena(CambioPasswordDTO cP) throws Exception {
 

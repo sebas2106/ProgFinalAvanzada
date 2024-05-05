@@ -9,4 +9,6 @@ public interface IComentarioServicio {
     void crearComentario(ComentarLugarDTO cL)throws Exception;
     void listarComentarios(ObtenerComentariosLugarDTO oC)throws Exception;
     void responderComentario(ResponderComentarioDTO rC)throws Exception;
+    void obtenerComentario(ResponderComentarioDTO rC)throws Exception;
+
 }
