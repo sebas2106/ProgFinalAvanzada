@@ -169,6 +169,7 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
             throw new Exception("No se encontró el Usuario");
         }
         Optional<Negocio> negocioOptional = negocioRepo.findById(addFav.idLugarSeleccionado());
+        //valida si el negocio a poner en favoritos existe
         if (negocioOptional.isEmpty()) {
             throw new Exception("No Existe esa ID de negocio");
         }
@@ -225,6 +226,16 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     }
 
     @Override
+    public List<Negocio> listarFavoritos(String identificacion) throws Exception {
+
+
+        //en proceso
+
+
+        return null;
+    }
+
+    @Override
     public void recuperarContrasena(RecuperacionPasswordDTO rP) throws Exception {
 
     }
@@ -266,6 +277,11 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     @Override
     public Negocio obtenerNegocio(String id) throws Exception {
         return negocioServicio.obtenerNegocio(id);
+    }
+
+    @Override
+    public List<Negocio> listarNegociosPropietario(String identificacion) throws Exception {
+        return negocioServicio.listarNegociosPropietario(identificacion);
     }
 
     @Override

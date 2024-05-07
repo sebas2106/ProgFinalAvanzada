@@ -111,18 +111,30 @@ public class NegocioServicioImpl implements INegocioServicio {
 
     @Override
     public String eliminarNegocio(EliminarLugarDTO eL) throws Exception {
-        //Buscamos el Negocio que se quiere eliminar
-        Optional<Negocio> optionalNegocio = negocioRepo.findById(eL.id()); //el id no es la identificacion si no el codigo
-        //Si no se encontró el usuario, lanzamos una excepción
-        if (optionalNegocio.isEmpty()) {
-            throw new Exception("No se encontró el Negocio a eliminar");
+        String mensaje="";
+        Optional<Negocio> optionalNegocio;
+        for(String id: eL.listId()){
+            //Buscamos el Negocio que se quiere eliminar
+           optionalNegocio = negocioRepo.findById(id); //el id no es la identificacion si no el codigo
+            //Si no se encontró el usuario, lanzamos una excepción
+            if (optionalNegocio.isEmpty()) {
+                throw new Exception("No se encontró el Negocio a eliminar");
+            }
+            //Obtenemos el usuario que se quiere eliminar y le asignamos el estado inactivo
+            Negocio negocio = optionalNegocio.get();
+            negocio.setEstadoReg(EstadoRegistro.INACTIVO);
+            //Como el objeto usuario ya tiene un id, el save() no crea un nuevo registro sino que actualiza el que ya existe
+           Negocio guardado= negocioRepo.save(negocio);
+           if (guardado==null){
+               mensaje+="Ha ocurrido un error al tratar de eliminar: "+guardado.getNombre()+" ;";
+           }
         }
-        //Obtenemos el usuario que se quiere eliminar y le asignamos el estado inactivo
-        Negocio negocio = optionalNegocio.get();
-        negocio.setEstadoReg(EstadoRegistro.INACTIVO);
-        //Como el objeto usuario ya tiene un id, el save() no crea un nuevo registro sino que actualiza el que ya existe
-        negocioRepo.save(negocio);
-        return "" + negocio.getNombre();
+        if (mensaje.equalsIgnoreCase("")){
+            mensaje="Realizado con exito";
+        }
+
+
+        return mensaje;
     }
 
     @Override

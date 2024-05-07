@@ -1,6 +1,8 @@
 package co.edu.uniquindio.ProyectoFinal.DTO;
 
+import java.util.List;
+
 public record EliminarLugarDTO(
-        String id
+        List<String> listId
 ) {
 }
