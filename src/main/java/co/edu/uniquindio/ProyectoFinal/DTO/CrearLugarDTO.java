@@ -16,6 +16,7 @@ public record CrearLugarDTO(
         @NotBlank String descripcion,
          TipoNegocio tipoNegocio,
         Ubicacion ubicacion,
+        List<Horario>listHorarios,
 
         List<String>listImages,
 

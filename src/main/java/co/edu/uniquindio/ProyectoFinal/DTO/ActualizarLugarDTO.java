@@ -18,6 +18,7 @@ public record ActualizarLugarDTO(
         Ubicacion ubicacion,
 
         List<String>listImages,
+        List<Horario>listHorarios,
 
         List<String> listTelefonos
 

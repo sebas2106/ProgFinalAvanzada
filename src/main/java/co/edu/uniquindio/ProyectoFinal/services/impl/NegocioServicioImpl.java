@@ -3,17 +3,18 @@ package co.edu.uniquindio.ProyectoFinal.services.impl;
 import co.edu.uniquindio.ProyectoFinal.DTO.*;
 import co.edu.uniquindio.ProyectoFinal.Repositories.NegocioRepo;
 import co.edu.uniquindio.ProyectoFinal.Repositories.UsuarioRepos;
+import co.edu.uniquindio.ProyectoFinal.model.Horario;
 import co.edu.uniquindio.ProyectoFinal.model.Negocio;
 import co.edu.uniquindio.ProyectoFinal.model.Usuario;
-import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoActual;
-import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRegistro;
-import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRevision;
-import co.edu.uniquindio.ProyectoFinal.model.enums.TipoNegocio;
+import co.edu.uniquindio.ProyectoFinal.model.enums.*;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.INegocioServicio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,8 @@ public class NegocioServicioImpl implements INegocioServicio {
 
     private final NegocioRepo negocioRepo;
     private final UsuarioRepos usuarioRepo;
+
+
 
     public NegocioServicioImpl(NegocioRepo negocioRepo, UsuarioRepos usuarioRepo) {
         this.negocioRepo = negocioRepo;
@@ -42,6 +45,10 @@ public class NegocioServicioImpl implements INegocioServicio {
         if(encontrado.getCuentaUsuario()==null){
             throw new Exception("El usuario debe tener creada una cuenta");
         }
+        if(encontrado.getCuentaUsuario().getEstadoCuenta()==EstadoCuenta.INACTIVA){
+            throw new Exception("La cuenta esta: "+encontrado.getCuentaUsuario().getEstadoCuenta());
+        }
+
         //Se le asignan sus campos
         negocio.setCodCreador(cL.codCreador());
 
@@ -54,14 +61,21 @@ public class NegocioServicioImpl implements INegocioServicio {
         negocio.setListImagenes(cL.listImages());
         negocio.setListTelefonos(cL.listTelefonos());
         negocio.setUbicacion(cL.ubicacion());
+        negocio.setListHorario(cL.listHorarios());
         //Se guarda en la base de datos y obtenemos el objeto registrado
         Negocio negocioGuardado = negocioRepo.save(negocio);
+        //se guarda el codigo en la cuenta del usuario creador
+        encontrado.getCuentaUsuario().getListNegociosAsociados().add(negocioGuardado.getCodNegocio());
+       if (negocioGuardado==null){
+           throw new Exception("No se ha podido guardar el negocio");
+       }
+        Usuario usuarioGuardado=usuarioRepo.save(encontrado);
+        if (usuarioGuardado==null){
+            throw new Exception("No se ha podido guardar el registro en usuario");
+        }
         //Retornamos el id (código) del negocio registrado
         return negocioGuardado.getCodNegocio();
     }
-
-
-
 
     @Override
     public String actualizarNegocio(ActualizarLugarDTO aL) throws Exception {
@@ -84,6 +98,7 @@ public class NegocioServicioImpl implements INegocioServicio {
         negocio.setUbicacion(aL.ubicacion());
         negocio.setListImagenes(aL.listImages());
         negocio.setListTelefonos(aL.listTelefonos());
+        negocio.setListHorario(aL.listHorarios());
         //Se guarda en la base de datos y obtenemos el objeto registrado
         Negocio negocioActualizado = negocioRepo.save(negocio);
         //Retornamos el id (código) del cliente registrado
@@ -117,9 +132,24 @@ public class NegocioServicioImpl implements INegocioServicio {
             throw new IOException("No se encontro el negocio con la identificación:" + id);
         }
         Negocio negocio = negocioOptional.get();
+
+        LocalTime horaActual = LocalTime.now();
+        DayOfWeek diaActual = LocalDate.now().getDayOfWeek();
+
+        negocio.setEstado(estaAbierto(negocio.getListHorario(),diaActual,horaActual));
+
         return negocio;
     }
-
+    public EstadoActual estaAbierto(List<Horario>horarios,DayOfWeek dia, LocalTime hora) {
+        for (Horario horario : horarios) {
+            if (horario.getDia().equals(dia) &&
+                    hora.isAfter(horario.getHoraInicial()) &&
+                    hora.isBefore(horario.getHoraFinal())) {
+                return EstadoActual.ABIERTO;
+            }
+        }
+        return EstadoActual.CERRADO;
+    }
 
     @Override
     public List<Negocio> buscarNegociosNomb(String nombre) throws Exception {

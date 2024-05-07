@@ -3,10 +3,13 @@ package co.edu.uniquindio.ProyectoFinal.services.impl;
 import co.edu.uniquindio.ProyectoFinal.DTO.*;
 import co.edu.uniquindio.ProyectoFinal.Repositories.NegocioRepo;
 import co.edu.uniquindio.ProyectoFinal.Repositories.UsuarioRepos;
+import co.edu.uniquindio.ProyectoFinal.model.Cuenta;
 import co.edu.uniquindio.ProyectoFinal.model.Negocio;
 import co.edu.uniquindio.ProyectoFinal.model.Usuario;
+import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoCuenta;
 import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRegistro;
 import co.edu.uniquindio.ProyectoFinal.model.enums.TipoUsuario;
+import co.edu.uniquindio.ProyectoFinal.services.interfaces.INegocioServicio;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.IUsuarioServicio;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,9 +27,12 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     private final UsuarioRepos usuarioRepo;
     private final NegocioRepo negocioRepo;
 
-    public UsuarioServicioImpl(UsuarioRepos usuarioRepo, NegocioRepo negocioRepo) {
+    private final INegocioServicio negocioServicio;
+
+    public UsuarioServicioImpl(UsuarioRepos usuarioRepo, NegocioRepo negocioRepo, INegocioServicio negocioServicio) {
         this.usuarioRepo = usuarioRepo;
         this.negocioRepo = negocioRepo;
+        this.negocioServicio = negocioServicio;
     }
 
     @Override
@@ -62,6 +68,7 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         //Retornamos el id (código) del cliente registrado
         return userGuardado.getCodigo();
     }
+
     @Override
     public String registrarseModerador(RegistroUsuarioDTO registroUsuarioDTO) throws Exception {
         //Se crea el objeto Cliente
@@ -95,6 +102,7 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         //Retornamos el id (código) del cliente registrado
         return userGuardado.getCodigo();
     }
+
     private boolean existeIdentificacion(String identificacion) {
         return usuarioRepo.findByIdentificacion(identificacion).isPresent();
     }
@@ -161,29 +169,29 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
             throw new Exception("No se encontró el Usuario");
         }
         Optional<Negocio> negocioOptional = negocioRepo.findById(addFav.idLugarSeleccionado());
-        if (negocioOptional.isEmpty()){
+        if (negocioOptional.isEmpty()) {
             throw new Exception("No Existe esa ID de negocio");
         }
         Usuario usuario = usuarioOptional.get();
-        if (usuario.getListNegocioFavorito()==null|| usuario.getListNegocioFavorito().isEmpty()) {
+        if (usuario.getListNegocioFavorito() == null || usuario.getListNegocioFavorito().isEmpty()) {
             List<String> lista = new ArrayList<>();
             usuario.setListNegocioFavorito(lista);
         }
-        if(validarNegocioEnUser(addFav.idLugarSeleccionado(),usuario.getListNegocioFavorito())){
+        if (validarNegocioEnUser(addFav.idLugarSeleccionado(), usuario.getListNegocioFavorito())) {
             throw new Exception("No se puede adicionar un negocio mas de una vez");
         }
         usuario.getListNegocioFavorito().add(addFav.idLugarSeleccionado());
         //guardamos
         usuarioRepo.save(usuario);
 
-        return ""+addFav.idLugarSeleccionado();
+        return "" + addFav.idLugarSeleccionado();
 
     }
 
-    private boolean validarNegocioEnUser(String idNegocio,List<String> listNegocioFavorito) {
-        for(String n:listNegocioFavorito){
-            if(!n.equalsIgnoreCase("")){
-                if (n.equalsIgnoreCase(idNegocio)){
+    private boolean validarNegocioEnUser(String idNegocio, List<String> listNegocioFavorito) {
+        for (String n : listNegocioFavorito) {
+            if (!n.equalsIgnoreCase("")) {
+                if (n.equalsIgnoreCase(idNegocio)) {
                     return true;
                 }
             }
@@ -199,21 +207,21 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
             throw new Exception("No se encontró el Usuario");
         }
         Optional<Negocio> negocioOptional = negocioRepo.findById(q.idLugarSeleccionado());
-        if (negocioOptional.isEmpty()){
+        if (negocioOptional.isEmpty()) {
             throw new Exception("No Existe esa ID de negocio");
         }
         Usuario usuario = usuarioOptional.get();
         if (usuario.getListNegocioFavorito().isEmpty()) {
             throw new Exception("Lista de favoritos esta vacia.");
         }
-        if(!validarNegocioEnUser(q.idLugarSeleccionado(),usuario.getListNegocioFavorito())){
-            throw new Exception("No se encuentra el negocio de id"+q.idLugarSeleccionado());
+        if (!validarNegocioEnUser(q.idLugarSeleccionado(), usuario.getListNegocioFavorito())) {
+            throw new Exception("No se encuentra el negocio de id" + q.idLugarSeleccionado());
         }
         usuario.getListNegocioFavorito().remove(q.idLugarSeleccionado());
         //guardamos
         usuarioRepo.save(usuario);
 
-        return ""+q.idLugarSeleccionado();
+        return "" + q.idLugarSeleccionado();
     }
 
     @Override
@@ -241,20 +249,110 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     }
 
     @Override
+    public String crearNegocio(CrearLugarDTO cL) throws Exception {
+        return negocioServicio.crearNegocio(cL);
+    }
+
+    @Override
+    public String actualizarNegocio(ActualizarLugarDTO aL) throws Exception {
+        return negocioServicio.actualizarNegocio(aL);
+    }
+
+    @Override
+    public String eliminarNegocio(EliminarLugarDTO eL) throws Exception {
+        return negocioServicio.eliminarNegocio(eL);
+    }
+
+    @Override
+    public Negocio obtenerNegocio(String id) throws Exception {
+        return negocioServicio.obtenerNegocio(id);
+    }
+
+    @Override
     public List<DetalleNegocioDTO> obtenerNegociosFav(String identificacionProp) throws Exception {
         Optional<Usuario> usuarioOptional = usuarioRepo.findByIdentificacion(identificacionProp);
         if (usuarioOptional.isEmpty()) {
             throw new IOException("No se encontro el usuario con la identificación:" + identificacionProp);
         }
 
-       // Negocio negocio = negocioOptional.get();
+        // Negocio negocio = negocioOptional.get();
         return null;
     }
 
 
-
     @Override
     public void cambiarContrasena(CambioPasswordDTO cP) throws Exception {
+
+    }
+
+    @Override
+    public Cuenta crerCuenta(CrearCuentaDTO crearCuentaDTO) throws Exception {
+        //Buscamos el usuario que se quiere actualizar
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(crearCuentaDTO.idUsuario());
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario");
+        }
+        Usuario encontrado = optionalUser.get();
+        if (encontrado.getCuentaUsuario() != null) {
+            throw new Exception("El usuario tiene cuenta creada: "+encontrado.getCuentaUsuario().getNombreCuenta());
+        }
+        Cuenta nuevaCuenta=new Cuenta();
+        nuevaCuenta.setNombreCuenta(crearCuentaDTO.nombre());
+        nuevaCuenta.setEstadoCuenta(EstadoCuenta.ACTIVA);
+
+        encontrado.setCuentaUsuario(nuevaCuenta);
+
+        Usuario nuevo=usuarioRepo.save(encontrado);
+        if (nuevo==null){
+            throw new Exception("No se guardaron cambios");
+        }
+
+        return nuevo.getCuentaUsuario();
+    }
+
+    @Override
+    public Cuenta actualizarCuenta(ActualizarCuentaDTO actualizarCuenta) throws Exception {
+        //Buscamos el usuario que se quiere actualizar
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(actualizarCuenta.idUsuario());
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario a actualizar");
+        }
+        Usuario encontrado = optionalUser.get();
+        if (encontrado.getCuentaUsuario() == null) {
+            throw new Exception("El usuario no tiene cuenta creada");
+        }
+        encontrado.getCuentaUsuario().setNombreCuenta(actualizarCuenta.nuevoNombre());
+
+        Usuario nuevo=usuarioRepo.save(encontrado);
+        if (nuevo==null){
+            throw new Exception("No se guardaron cambios");
+        }
+
+        return nuevo.getCuentaUsuario();
+    }
+
+    @Override
+    public void eliminarCuenta(EliminarCuentaDTO eliminarCuenta) throws Exception {
+        //Buscamos el usuario que se quiere actualizar
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(eliminarCuenta.idUsuario());
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario a actualizar");
+        }
+        Usuario encontrado = optionalUser.get();
+        if (encontrado.getCuentaUsuario() == null) {
+            throw new Exception("El usuario no tiene cuenta creada");
+        }
+        encontrado.getCuentaUsuario().setEstadoCuenta(EstadoCuenta.INACTIVA);
+
+        //INACTIVAR NEGOCIOS
+
+        Usuario nuevo=usuarioRepo.save(encontrado);
+        if (nuevo==null){
+            throw new Exception("No se guardaron cambios");
+        }
 
     }
 }

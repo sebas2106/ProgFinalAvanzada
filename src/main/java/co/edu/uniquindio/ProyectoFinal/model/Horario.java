@@ -3,6 +3,7 @@ package co.edu.uniquindio.ProyectoFinal.model;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @AllArgsConstructor
@@ -10,7 +11,7 @@ import java.time.LocalTime;
 @Setter
 public class Horario {
 
-    private String dia;
+    private DayOfWeek dia;
     private LocalTime horaInicial;
     private LocalTime horaFinal;
 
