@@ -13,5 +13,6 @@ public class Comentario {
     private String codComentario;
     private String codUsuario;
     private String comentario;
+    private String codUsuarioRespuesta;
     private String respuesta;
 }

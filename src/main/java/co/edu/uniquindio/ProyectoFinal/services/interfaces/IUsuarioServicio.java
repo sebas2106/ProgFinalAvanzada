@@ -39,5 +39,7 @@ public interface IUsuarioServicio {
 
     boolean comentarNegocio(ComentarLugarDTO comentarLugarDTO)throws Exception;
 
+    boolean responderComentarioNegocio(ResponderComentarioDTO responderComentarioLugarDTO)throws Exception;
+
 
 }

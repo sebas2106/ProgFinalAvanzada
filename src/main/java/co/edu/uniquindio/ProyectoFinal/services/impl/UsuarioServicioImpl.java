@@ -237,20 +237,20 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         if (encontrado.getListNegocioFavorito() == null) {
             throw new Exception("El usuario no tiene negocios favoritos");
         }
-        List<Negocio>listNegociosFav=obtenerListNegociosFav(encontrado.getListNegocioFavorito());
+        List<Negocio> listNegociosFav = obtenerListNegociosFav(encontrado.getListNegocioFavorito());
 
         return listNegociosFav;
     }
 
-    private List<Negocio> obtenerListNegociosFav(List<String>negociosFav) throws Exception {
-        List<Negocio>listNegociosEncontrados=new ArrayList<>();
-        for(String idNegocio:negociosFav){
-            if (!idNegocio.equalsIgnoreCase("")){
-                Optional<Negocio>encontrado=negocioRepo.findById(idNegocio);
-                if (encontrado==null){
-                    throw new Exception("Ha ocurrido un error al intentar traer el negocio: "+idNegocio);
+    private List<Negocio> obtenerListNegociosFav(List<String> negociosFav) throws Exception {
+        List<Negocio> listNegociosEncontrados = new ArrayList<>();
+        for (String idNegocio : negociosFav) {
+            if (!idNegocio.equalsIgnoreCase("")) {
+                Optional<Negocio> encontrado = negocioRepo.findById(idNegocio);
+                if (encontrado == null) {
+                    throw new Exception("Ha ocurrido un error al intentar traer el negocio: " + idNegocio);
                 }
-                Negocio negocioEncontrado=encontrado.get();
+                Negocio negocioEncontrado = encontrado.get();
                 listNegociosEncontrados.add(negocioEncontrado);
 
             }
@@ -316,18 +316,18 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         if (optionalUser.isEmpty()) {
             throw new Exception("No se encontró el usuario a actualizar");
         }
-       // Usuario encontrado = optionalUser.get();
-        Optional<Negocio>encontrado=negocioRepo.findById(comentarLugarDTO.codNegocio());
-        if (encontrado==null){
-            throw new Exception("Ha ocurrido un error al intentar traer el negocio: "+comentarLugarDTO.codNegocio());
+        // Usuario encontrado = optionalUser.get();
+        Optional<Negocio> encontrado = negocioRepo.findById(comentarLugarDTO.codNegocio());
+        if (encontrado == null) {
+            throw new Exception("Ha ocurrido un error al intentar traer el negocio: " + comentarLugarDTO.codNegocio());
         }
-        Negocio negocioEncontrado=encontrado.get();
-        if (negocioEncontrado.getListComentarios()==null){
-            List<Comentario>listaNueva=new ArrayList<>();
+        Negocio negocioEncontrado = encontrado.get();
+        if (negocioEncontrado.getListComentarios() == null) {
+            List<Comentario> listaNueva = new ArrayList<>();
             negocioEncontrado.setListComentarios(listaNueva);
         }
 
-        Comentario nuevoComentario=new Comentario();
+        Comentario nuevoComentario = new Comentario();
 
         nuevoComentario.setCodUsuario(comentarLugarDTO.codNegocio());
         nuevoComentario.setComentario(comentarLugarDTO.comentario());
@@ -335,12 +335,40 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         negocioEncontrado.getListComentarios().add(nuevoComentario);
 
 
-        Negocio negocioComentado=negocioRepo.save(negocioEncontrado);
-        if (negocioEncontrado==null){
-            throw new Exception("Ha ocurrido un error al intentar comentar el negocio: "+comentarLugarDTO.codNegocio());
+        Negocio negocioComentado = negocioRepo.save(negocioEncontrado);
+        if (negocioEncontrado == null) {
+            throw new Exception("Ha ocurrido un error al intentar comentar el negocio: " + comentarLugarDTO.codNegocio());
         }
         return true;
 
+    }
+
+    @Override
+    public boolean responderComentarioNegocio(ResponderComentarioDTO responderComentarioLugarDTO) throws Exception {
+        Optional<Negocio> negocioOptional = negocioRepo.findById(responderComentarioLugarDTO.idNegocio());
+
+        if (negocioOptional.isEmpty()) {
+            throw new Exception("No se encuentra el negocio: " + responderComentarioLugarDTO.idNegocio());
+        }
+        Negocio negocioEncontrado = negocioOptional.get();
+        if (negocioEncontrado.getListComentarios()==null){
+            throw new Exception("El negocio no tiene comentarios");
+        }
+        for (Comentario a:negocioEncontrado.getListComentarios()){
+            if(a!=null){
+                if (a.getCodComentario().equalsIgnoreCase(responderComentarioLugarDTO.idComentario())){
+                    a.setRespuesta(responderComentarioLugarDTO.respuesta());
+
+                    Negocio negocioActualizado=negocioRepo.save(negocioEncontrado);
+                    if (negocioActualizado==null){
+                        throw new Exception("No se ha ingresado la respuesta");
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -370,16 +398,16 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         }
         Usuario encontrado = optionalUser.get();
         if (encontrado.getCuentaUsuario() != null) {
-            throw new Exception("El usuario tiene cuenta creada: "+encontrado.getCuentaUsuario().getNombreCuenta());
+            throw new Exception("El usuario tiene cuenta creada: " + encontrado.getCuentaUsuario().getNombreCuenta());
         }
-        Cuenta nuevaCuenta=new Cuenta();
+        Cuenta nuevaCuenta = new Cuenta();
         nuevaCuenta.setNombreCuenta(crearCuentaDTO.nombre());
         nuevaCuenta.setEstadoCuenta(EstadoCuenta.ACTIVA);
 
         encontrado.setCuentaUsuario(nuevaCuenta);
 
-        Usuario nuevo=usuarioRepo.save(encontrado);
-        if (nuevo==null){
+        Usuario nuevo = usuarioRepo.save(encontrado);
+        if (nuevo == null) {
             throw new Exception("No se guardaron cambios");
         }
 
@@ -400,8 +428,8 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         }
         encontrado.getCuentaUsuario().setNombreCuenta(actualizarCuenta.nuevoNombre());
 
-        Usuario nuevo=usuarioRepo.save(encontrado);
-        if (nuevo==null){
+        Usuario nuevo = usuarioRepo.save(encontrado);
+        if (nuevo == null) {
             throw new Exception("No se guardaron cambios");
         }
 
@@ -424,8 +452,8 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
 
         //INACTIVAR NEGOCIOS
 
-        Usuario nuevo=usuarioRepo.save(encontrado);
-        if (nuevo==null){
+        Usuario nuevo = usuarioRepo.save(encontrado);
+        if (nuevo == null) {
             throw new Exception("No se guardaron cambios");
         }
 

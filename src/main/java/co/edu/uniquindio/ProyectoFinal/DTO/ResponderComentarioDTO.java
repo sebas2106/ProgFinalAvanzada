@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 public record ResponderComentarioDTO(
-       @NotBlank                    String idComentario,
-        @NotBlank @Length(max=2000) String respuesta
+        @NotBlank String idNegocio,
+        @NotBlank String idComentario,
+        @NotBlank String idUsuarioRespuesta,
+        @NotBlank @Length(max = 2000) String respuesta
 ) {
 }
