@@ -37,5 +37,7 @@ public interface IUsuarioServicio {
     Negocio obtenerNegocio(String id)throws Exception;
     List<Negocio> listarNegociosPropietario(String identificacion)throws Exception;
 
+    boolean comentarNegocio(ComentarLugarDTO comentarLugarDTO)throws Exception;
+
 
 }

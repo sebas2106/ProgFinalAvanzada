@@ -3,6 +3,7 @@ package co.edu.uniquindio.ProyectoFinal.services.impl;
 import co.edu.uniquindio.ProyectoFinal.DTO.*;
 import co.edu.uniquindio.ProyectoFinal.Repositories.NegocioRepo;
 import co.edu.uniquindio.ProyectoFinal.Repositories.UsuarioRepos;
+import co.edu.uniquindio.ProyectoFinal.model.Comentario;
 import co.edu.uniquindio.ProyectoFinal.model.Cuenta;
 import co.edu.uniquindio.ProyectoFinal.model.Negocio;
 import co.edu.uniquindio.ProyectoFinal.model.Usuario;
@@ -227,12 +228,35 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
 
     @Override
     public List<Negocio> listarFavoritos(String identificacion) throws Exception {
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(identificacion);
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario a actualizar");
+        }
+        Usuario encontrado = optionalUser.get();
+        if (encontrado.getListNegocioFavorito() == null) {
+            throw new Exception("El usuario no tiene negocios favoritos");
+        }
+        List<Negocio>listNegociosFav=obtenerListNegociosFav(encontrado.getListNegocioFavorito());
 
+        return listNegociosFav;
+    }
 
-        //en proceso
+    private List<Negocio> obtenerListNegociosFav(List<String>negociosFav) throws Exception {
+        List<Negocio>listNegociosEncontrados=new ArrayList<>();
+        for(String idNegocio:negociosFav){
+            if (!idNegocio.equalsIgnoreCase("")){
+                Optional<Negocio>encontrado=negocioRepo.findById(idNegocio);
+                if (encontrado==null){
+                    throw new Exception("Ha ocurrido un error al intentar traer el negocio: "+idNegocio);
+                }
+                Negocio negocioEncontrado=encontrado.get();
+                listNegociosEncontrados.add(negocioEncontrado);
 
+            }
+        }
 
-        return null;
+        return listNegociosEncontrados;
     }
 
     @Override
@@ -282,6 +306,41 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     @Override
     public List<Negocio> listarNegociosPropietario(String identificacion) throws Exception {
         return negocioServicio.listarNegociosPropietario(identificacion);
+    }
+
+    @Override
+    public boolean comentarNegocio(ComentarLugarDTO comentarLugarDTO) throws Exception {
+        //Buscamos el usuario que se quiere actualizar
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(comentarLugarDTO.codUsuario());
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario a actualizar");
+        }
+       // Usuario encontrado = optionalUser.get();
+        Optional<Negocio>encontrado=negocioRepo.findById(comentarLugarDTO.codNegocio());
+        if (encontrado==null){
+            throw new Exception("Ha ocurrido un error al intentar traer el negocio: "+comentarLugarDTO.codNegocio());
+        }
+        Negocio negocioEncontrado=encontrado.get();
+        if (negocioEncontrado.getListComentarios()==null){
+            List<Comentario>listaNueva=new ArrayList<>();
+            negocioEncontrado.setListComentarios(listaNueva);
+        }
+
+        Comentario nuevoComentario=new Comentario();
+
+        nuevoComentario.setCodUsuario(comentarLugarDTO.codNegocio());
+        nuevoComentario.setComentario(comentarLugarDTO.comentario());
+
+        negocioEncontrado.getListComentarios().add(nuevoComentario);
+
+
+        Negocio negocioComentado=negocioRepo.save(negocioEncontrado);
+        if (negocioEncontrado==null){
+            throw new Exception("Ha ocurrido un error al intentar comentar el negocio: "+comentarLugarDTO.codNegocio());
+        }
+        return true;
+
     }
 
     @Override
