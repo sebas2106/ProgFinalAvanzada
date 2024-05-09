@@ -1,4 +1,6 @@
 package co.edu.uniquindio.ProyectoFinal.services.impl;
+import co.edu.uniquindio.ProyectoFinal.DTO.CambioPasswordDTO;
+import co.edu.uniquindio.ProyectoFinal.DTO.EnviarLinkRecuPassDTO;
 import co.edu.uniquindio.ProyectoFinal.DTO.LoginDTO;
 import co.edu.uniquindio.ProyectoFinal.DTO.TokenDTO;
 import co.edu.uniquindio.ProyectoFinal.Repositories.UsuarioRepos;
@@ -67,5 +69,27 @@ public class AutenticacionServicioImpl implements IAutenticacionServicio {
 
 
         return new TokenDTO( jwtUtils.generarToken(usuario.getEmail(), map) );
+    }
+
+    @Override
+    public TokenDTO cambiarPassword(CambioPasswordDTO cambioPasswordDTO) throws Exception {
+
+
+
+
+
+        return null;
+    }
+
+    @Override
+    public TokenDTO enviarLinkRecuperacion(EnviarLinkRecuPassDTO enviarLinkRecuPassDTO) throws Exception {
+        Optional<Usuario>usuarioOptional=usuarioRepo.findByEmail(enviarLinkRecuPassDTO.correoRecuperación());
+        if (usuarioOptional.isEmpty()){
+            throw new Exception("No se encontro el usuario");
+        }
+       Usuario encontrado=usuarioOptional.get();
+
+
+        return null;
     }
 }

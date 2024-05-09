@@ -29,7 +29,6 @@ public interface IUsuarioServicio {
     Cuenta crerCuenta(CrearCuentaDTO crearCuentaDTO) throws Exception;
     Cuenta actualizarCuenta(ActualizarCuentaDTO actualizarCuenta) throws Exception;
     void eliminarCuenta(EliminarCuentaDTO eliminarCuenta) throws Exception;
-    List<DetalleNegocioDTO> obtenerNegociosFav(String identificacionProp) throws Exception;
     DetalleUsuarioDTO obtenerUsuario(String identificacion) throws IOException;
     String crearNegocio(CrearLugarDTO cL)throws Exception;
     String actualizarNegocio(ActualizarLugarDTO aL)throws Exception;
