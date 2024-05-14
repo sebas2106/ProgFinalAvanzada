@@ -126,6 +126,9 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         }
         //Obtenemos el Usuario que se quiere actualizar y le asignamos los nuevos valores (el nickname no se puede cambiar)
         Usuario user = optionalUser.get();
+        if (user.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario debe estar Activo para realizar cambios");
+        }
         user.setNombre(actuaizarUsuarioDTO.nombre());
         user.setFotoPerfil(actuaizarUsuarioDTO.fotoPerfil());
         user.setEmail(actuaizarUsuarioDTO.email());
@@ -146,6 +149,9 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
 
         //Obtenemos el usuario que se quiere eliminar y le asignamos el estado inactivo
         Usuario user = optionalCliente.get();
+        if (user.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario debe estar Activo para realizar cambios");
+        }
         user.setEstadoRegistro(EstadoRegistro.INACTIVO);
         //Como el objeto usuario ya tiene un id, el save() no crea un nuevo registro sino que actualiza el que ya existe
         usuarioRepo.save(user);
@@ -265,12 +271,15 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     }
 
     @Override
-    public DetalleUsuarioDTO obtenerUsuario(String identificacion) throws IOException {
+    public DetalleUsuarioDTO obtenerUsuario(String identificacion) throws Exception {
         Optional<Usuario> usuarioOptional = usuarioRepo.findByIdentificacion(identificacion);
         if (usuarioOptional.isEmpty()) {
             throw new IOException("No se encontro el usuario con la identificación:" + identificacion);
         }
         Usuario user = usuarioOptional.get();
+        if (user.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario debe estar Activo para realizar cambios");
+        }
         DetalleUsuarioDTO nuevoDetalleUsuario = DetalleUsuarioDTO.crearDetalleUsuario(
                 user.getIdentificacion(),
                 user.getNombre(),

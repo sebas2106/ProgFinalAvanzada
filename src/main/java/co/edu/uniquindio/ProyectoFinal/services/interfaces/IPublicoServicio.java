@@ -12,7 +12,7 @@ import java.util.Map;
 
 public interface IPublicoServicio {
 
-    void listarTiposDeNegocio(ListarTiposNegocioDTO listarTiposNegocioDTO) throws Exception;
+    List<Negocio> listarTiposDeNegocio(ListarTiposNegocioDTO listarTiposNegocioDTO) throws Exception;
 
     List<Negocio> buscarNegocio(BuscarNegocioDTO buscarNegocioDTO) throws Exception;
 

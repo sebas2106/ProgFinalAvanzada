@@ -22,6 +22,7 @@ public class HistorialRevision implements Serializable {
     private LocalDateTime fecha;
     private String codNegocio;
     private EstadoRevision estadoRevision;
+    private LocalDateTime fechaRevision;
     private String descripcion;
     private String codModerador;
 }

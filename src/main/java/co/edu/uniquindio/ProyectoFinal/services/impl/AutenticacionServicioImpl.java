@@ -7,6 +7,7 @@ import co.edu.uniquindio.ProyectoFinal.Repositories.UsuarioRepos;
 
 import co.edu.uniquindio.ProyectoFinal.model.Ubicacion;
 import co.edu.uniquindio.ProyectoFinal.model.Usuario;
+import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRegistro;
 import co.edu.uniquindio.ProyectoFinal.model.enums.TipoUsuario;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.IAutenticacionServicio;
 import co.edu.uniquindio.ProyectoFinal.utils.JWTUtils;
@@ -34,6 +35,9 @@ public class AutenticacionServicioImpl implements IAutenticacionServicio {
         if(usuario.getTipoUsuario()== TipoUsuario.MODERADOR){
             throw new Exception("El usuario no tieme permisos para acceder por este modulo");
         }
+        if (usuario.getEstadoRegistro()== EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario debe estar Activo para realizar cambios");
+        }
         String passwordEncriptada = passwordEncoder.encode(loginDTO.password());
         if( !passwordEncoder.matches(loginDTO.password(), usuario.getPassword())) {
             throw new Exception("La contraseña es incorrecta");
@@ -58,6 +62,9 @@ public class AutenticacionServicioImpl implements IAutenticacionServicio {
 
         if(!(usuario.getTipoUsuario()== TipoUsuario.MODERADOR)){
             throw new Exception("El usuario no tieme permisos para acceder");
+        }
+        if (usuario.getEstadoRegistro()== EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario debe estar Activo para realizar cambios");
         }
         if( !passwordEncoder.matches(loginDTO.password(), usuario.getPassword()) ) {
             throw new Exception("La contraseña es incorrecta");

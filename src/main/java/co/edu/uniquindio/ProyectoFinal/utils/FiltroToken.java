@@ -53,6 +53,9 @@ public class FiltroToken extends OncePerRequestFilter {
                 } else {
                     error = false;
                 }
+
+
+
 //Agregar más validaciones para otros roles y recursos (rutas de la API) aquí
             } catch (MalformedJwtException | SignatureException e) {
                 crearRespuestaError("El token es incorrecto",

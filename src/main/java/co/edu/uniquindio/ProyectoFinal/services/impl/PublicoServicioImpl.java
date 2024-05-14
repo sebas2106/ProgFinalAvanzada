@@ -16,11 +16,18 @@ import java.util.Optional;
 public class PublicoServicioImpl implements IPublicoServicio {
 
     private NegocioRepo negocioRepository;
+    private Comentario comentario;
 
+    public PublicoServicioImpl(NegocioRepo negocioRepository) {
+        this.negocioRepository = negocioRepository;
+    }
 
     @Override
-    public void listarTiposDeNegocio(ListarTiposNegocioDTO listarTiposNegocioDTO) throws Exception {
+    public List<Negocio> listarTiposDeNegocio(ListarTiposNegocioDTO listarTiposNegocioDTO) throws Exception {
+        Optional<List<Negocio>> listNegociosEncontradosOptional = negocioRepository.findByTipoNegocio(listarTiposNegocioDTO.tipoBuscado());
+        List<Negocio>negociosObtenidosByTipo=listNegociosEncontradosOptional.get();
 
+        return negociosObtenidosByTipo;
     }
 
     @Override
@@ -36,9 +43,9 @@ public class PublicoServicioImpl implements IPublicoServicio {
         if (negocioOptional.isEmpty()) {
             throw new Exception("No se ha encontrado el negocio");
         }
-
-
-        return null;
+        Negocio negocioObtenido=negocioOptional.get();
+        List<Comentario>comentariosNegocio=negocioObtenido.getListComentarios();
+        return comentariosNegocio;
     }
 
     @Override

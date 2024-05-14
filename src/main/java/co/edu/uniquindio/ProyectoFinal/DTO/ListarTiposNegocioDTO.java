@@ -1,4 +1,10 @@
 package co.edu.uniquindio.ProyectoFinal.DTO;
 
-public record ListarTiposNegocioDTO() {
+import co.edu.uniquindio.ProyectoFinal.model.enums.TipoNegocio;
+import lombok.NonNull;
+
+public record ListarTiposNegocioDTO(
+        @NonNull TipoNegocio tipoBuscado
+
+        ) {
 }
