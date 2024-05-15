@@ -180,11 +180,21 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         if (negocioOptional.isEmpty()) {
             throw new Exception("No Existe esa ID de negocio");
         }
+        Negocio negocioEncontrado=negocioOptional.get();
+        if (negocioEncontrado.getEstadoReg()==EstadoRegistro.INACTIVO){
+            throw new Exception("No se puede adicionar un negocio inactivo a los favoritos");
+        }
         Usuario usuario = usuarioOptional.get();
+        if (usuario.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario debe estar activo");
+        }
+
         if (usuario.getListNegocioFavorito() == null || usuario.getListNegocioFavorito().isEmpty()) {
             List<String> lista = new ArrayList<>();
             usuario.setListNegocioFavorito(lista);
         }
+
+
         if (validarNegocioEnUser(addFav.idLugarSeleccionado(), usuario.getListNegocioFavorito())) {
             throw new Exception("No se puede adicionar un negocio mas de una vez");
         }
@@ -213,6 +223,10 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         //adicionamos el id de negocios favoritos al la lista del usuario
         if (usuarioOptional.isEmpty()) {
             throw new Exception("No se encontró el Usuario");
+        }
+        Usuario userEncontrado=usuarioOptional.get();
+        if (userEncontrado.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("No se puede remover un favorito de un usuario inactivo");
         }
         Optional<Negocio> negocioOptional = negocioRepo.findById(q.idLugarSeleccionado());
         if (negocioOptional.isEmpty()) {
@@ -325,12 +339,18 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         if (optionalUser.isEmpty()) {
             throw new Exception("No se encontró el usuario a actualizar");
         }
-        // Usuario encontrado = optionalUser.get();
+        Usuario userEncontrado = optionalUser.get();
+        if (userEncontrado.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario comentador debe estar ACTIVO");
+        }
         Optional<Negocio> encontrado = negocioRepo.findById(comentarLugarDTO.codNegocio());
         if (encontrado == null) {
             throw new Exception("Ha ocurrido un error al intentar traer el negocio: " + comentarLugarDTO.codNegocio());
         }
         Negocio negocioEncontrado = encontrado.get();
+        if (negocioEncontrado.getEstadoReg()==EstadoRegistro.INACTIVO){
+            throw new Exception("No se puede comentar un negocio inactivo");
+        }
         if (negocioEncontrado.getListComentarios() == null) {
             List<Comentario> listaNueva = new ArrayList<>();
             negocioEncontrado.setListComentarios(listaNueva);
@@ -355,6 +375,14 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     @Override
     public boolean responderComentarioNegocio(ResponderComentarioDTO responderComentarioLugarDTO) throws Exception {
         Optional<Negocio> negocioOptional = negocioRepo.findById(responderComentarioLugarDTO.idNegocio());
+        Optional<Usuario>usuarioOptional=usuarioRepo.findByIdentificacion(responderComentarioLugarDTO.idUsuarioRespuesta());
+        if (usuarioOptional.isEmpty()){
+            throw new Exception("Usuario no encontrado");
+        }
+        Usuario userEncontrado=usuarioOptional.get();
+        if (userEncontrado.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("El Usuario que comenta esta inactivo");
+        }
 
         if (negocioOptional.isEmpty()) {
             throw new Exception("No se encuentra el negocio: " + responderComentarioLugarDTO.idNegocio());

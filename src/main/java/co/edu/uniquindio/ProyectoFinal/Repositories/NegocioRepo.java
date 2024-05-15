@@ -20,5 +20,6 @@ public interface NegocioRepo extends MongoRepository<Negocio, String> {
     Optional<List<Negocio>> findByEstadoReg(EstadoRegistro estado);
     Optional<List<Negocio>> findByEstadoRevisionAndEstadoReg(EstadoRevision estadoRev,EstadoRegistro estadoRegistro);
     Optional<List<Negocio>> findByCodCreador(String identificacion);
+    Optional<List<Negocio>> findByCodCreadorAndEstadoReg(String identificacion,EstadoRegistro estadoRegistro);
    Optional <List<Negocio>> findByNombreContainingIgnoreCase(String s);
 }

@@ -34,8 +34,12 @@ public class Usuario implements Serializable {
     private List<String> listNegocioFavorito;
     private List<String>listTelefonos;
 
+    //esta variable solo guarda 10 palabras para que en base a estas
+    // realice una consulta de los negocios que almenos contengan 1 de estas
+    private List<String>ultimasBusquedas;
+
     @Builder
-    public Usuario(String identificacion, String nombre, String fotoPerfil, String username, String password, String email, EstadoRegistro estadoRegistro, TipoUsuario tipoUsuario, List<String> listNegocioFavorito, List<String> listTelefonos) {
+    public Usuario(String identificacion, String nombre, String fotoPerfil, String username, String password, String email, EstadoRegistro estadoRegistro, TipoUsuario tipoUsuario, List<String> listNegocioFavorito, List<String> listTelefonos,List<String>ultimasBusquedas) {
         this.identificacion = identificacion;
         this.nombre = nombre;
         this.fotoPerfil = fotoPerfil;
@@ -46,6 +50,7 @@ public class Usuario implements Serializable {
         this.tipoUsuario = tipoUsuario;
         this.listNegocioFavorito = listNegocioFavorito;
         this.listTelefonos = listTelefonos;
+        this.ultimasBusquedas = ultimasBusquedas;
     }
 
 }

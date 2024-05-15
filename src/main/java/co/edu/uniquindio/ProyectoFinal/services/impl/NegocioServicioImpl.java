@@ -45,6 +45,9 @@ public class NegocioServicioImpl implements INegocioServicio {
         if(encontrado.getCuentaUsuario()==null){
             throw new Exception("El usuario debe tener creada una cuenta");
         }
+        if(encontrado.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("El usuario debe estar activo para realizar cambios");
+        }
         if(encontrado.getCuentaUsuario().getEstadoCuenta()==EstadoCuenta.INACTIVA){
             throw new Exception("La cuenta esta: "+encontrado.getCuentaUsuario().getEstadoCuenta());
         }
@@ -82,9 +85,14 @@ public class NegocioServicioImpl implements INegocioServicio {
         if (!existeIDNegocio(aL.cod())) {
             throw new Exception("El correo ya se encuentra registrado");
         }
+
         Optional<Negocio> opcionalNegocio = negocioRepo.findById(aL.cod());
         Negocio negocio = new Negocio();
         negocio = opcionalNegocio.get();
+
+        if (negocio.getEstadoReg()==EstadoRegistro.INACTIVO) {
+            throw new Exception("El Negocio debe estar activo para realizar cambios");
+        }
 
         negocio.setNombre(aL.nombre());
         negocio.setDescripcion(aL.descripcion());
@@ -122,6 +130,9 @@ public class NegocioServicioImpl implements INegocioServicio {
             }
             //Obtenemos el usuario que se quiere eliminar y le asignamos el estado inactivo
             Negocio negocio = optionalNegocio.get();
+            if (negocio.getEstadoReg()==EstadoRegistro.INACTIVO) {
+                throw new Exception("El Negocio debe estar activo para realizar cambios");
+            }
             negocio.setEstadoReg(EstadoRegistro.INACTIVO);
             //Como el objeto usuario ya tiene un id, el save() no crea un nuevo registro sino que actualiza el que ya existe
            Negocio guardado= negocioRepo.save(negocio);
@@ -144,7 +155,9 @@ public class NegocioServicioImpl implements INegocioServicio {
             throw new IOException("No se encontro el negocio con la identificación:" + id);
         }
         Negocio negocio = negocioOptional.get();
-
+        if (negocio.getEstadoReg()==EstadoRegistro.INACTIVO) {
+            throw new Exception("El Negocio debe estar activo para obtenerlo");
+        }
         LocalTime horaActual = LocalTime.now();
         DayOfWeek diaActual = LocalDate.now().getDayOfWeek();
 
@@ -199,7 +212,11 @@ public class NegocioServicioImpl implements INegocioServicio {
         if (usuarioOptional.isEmpty()){
             throw new Exception("No se encontraron usuarios con este Identificación");
         }
-        Optional<List<Negocio>> negocioOptional = negocioRepo.findByCodCreador(identificacion);
+        Usuario userEncontrado=usuarioOptional.get();
+        if (userEncontrado.getEstadoRegistro()==EstadoRegistro.INACTIVO){
+            throw new Exception("No se pueden listar negocios de este usuario ya que se encuentra inactivo");
+        }
+        Optional<List<Negocio>> negocioOptional = negocioRepo.findByCodCreadorAndEstadoReg(identificacion,EstadoRegistro.ACTIVO);
         List<Negocio> negociosEncontrados=new ArrayList<>();
         if (!negocioOptional.isEmpty()){
             negociosEncontrados=negocioOptional.get();

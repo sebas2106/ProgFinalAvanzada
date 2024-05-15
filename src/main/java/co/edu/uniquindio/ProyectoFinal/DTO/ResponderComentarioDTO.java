@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 
 public record ResponderComentarioDTO(
         @NotBlank String idNegocio,
+
         @NotBlank String idComentario,
         @NotBlank String idUsuarioRespuesta,
         @NotBlank @Length(max = 2000) String respuesta
