@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.Length;
 
 public record CambioPasswordDTO(
         @NotBlank @Length(min = 5) String passwordNew,
-        @NotBlank  String id,
         @NotBlank String token
 ) {
 }

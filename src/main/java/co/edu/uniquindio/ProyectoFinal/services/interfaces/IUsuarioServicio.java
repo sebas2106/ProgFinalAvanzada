@@ -17,15 +17,12 @@ public interface IUsuarioServicio {
 
     void borrarUsuario(String id) throws Exception;
 
-    void iniciarSesion(InicioSesionDTO inicioSesionDTO) throws Exception;
 
     void enviarLinkRecuperacion(String email) throws Exception;
 
     String guardarFavorito(AddFavoriteDTO addFav) throws Exception;
     String removeFavorito(QuitarLugarFavDTO q) throws Exception;
     List<Negocio> listarFavoritos(String identificacion)throws Exception;
-    void recuperarContrasena(RecuperacionPasswordDTO rP) throws Exception;
-    void cambiarContrasena(CambioPasswordDTO cP) throws Exception;
     Cuenta crerCuenta(CrearCuentaDTO crearCuentaDTO) throws Exception;
     Cuenta actualizarCuenta(ActualizarCuentaDTO actualizarCuenta) throws Exception;
     void eliminarCuenta(EliminarCuentaDTO eliminarCuenta) throws Exception;

@@ -1,8 +1,6 @@
 package co.edu.uniquindio.ProyectoFinal.controladores;
 
-import co.edu.uniquindio.ProyectoFinal.DTO.LoginDTO;
-import co.edu.uniquindio.ProyectoFinal.DTO.MensajeDTO;
-import co.edu.uniquindio.ProyectoFinal.DTO.TokenDTO;
+import co.edu.uniquindio.ProyectoFinal.DTO.*;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.IAutenticacionServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +25,20 @@ public class AutenticacionControlador {
                                                                      LoginDTO loginDTO) throws Exception {
         TokenDTO tokenDTO = autenticacionServicio.iniciarSesionModerador(loginDTO);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, tokenDTO));
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<MensajeDTO> cambiarPassword(@Valid @RequestBody
+                                                                    CambioPasswordDTO cambioPasswordDTO) throws Exception {
+       autenticacionServicio.cambiarPassword(cambioPasswordDTO);
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Se ha Realizado el cambio")
+        );
+    }
+
+    @PostMapping("/enviarLinkRecuperacion")
+    public ResponseEntity<MensajeDTO> enviarLinkRecuperacion(@Valid @RequestBody EnviarLinkRecuPassDTO enviarLinkRecuPassDTO) throws Exception {
+        autenticacionServicio.enviarLinkRecuperacion(enviarLinkRecuPassDTO);
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Se ha enviado el correo de recuperación")
+        );
     }
 }

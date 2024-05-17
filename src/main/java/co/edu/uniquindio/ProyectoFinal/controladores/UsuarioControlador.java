@@ -61,8 +61,8 @@ public class UsuarioControlador {
     }
 
     @GetMapping("/obtener-NegociosFav/{identificacionProp}")
-    public ResponseEntity<MensajeDTO<List<DetalleNegocioDTO>>> obtenerNegociosFav(@PathVariable String identificacionProp) throws Exception{
+    public ResponseEntity<MensajeDTO<List<Negocio>>> obtenerNegociosFav(@PathVariable String identificacionProp) throws Exception{
         return ResponseEntity.ok().body( new MensajeDTO<>(false,
-                usuarioServicio.obtenerNegociosFav(identificacionProp) ) );
+                usuarioServicio.listarFavoritos(identificacionProp) ) );
     }
 }

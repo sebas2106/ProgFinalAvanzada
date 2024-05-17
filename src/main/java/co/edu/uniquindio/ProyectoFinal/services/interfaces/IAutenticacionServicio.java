@@ -10,7 +10,7 @@ public interface IAutenticacionServicio {
 
     TokenDTO iniciarSesionModerador(LoginDTO loginDTO) throws Exception;
 
-    TokenDTO cambiarPassword(CambioPasswordDTO cambioPasswordDTO) throws Exception;
+    void cambiarPassword(CambioPasswordDTO cambioPasswordDTO) throws Exception;
 
-    TokenDTO enviarLinkRecuperacion(EnviarLinkRecuPassDTO enviarLinkRecuPassDTO) throws Exception;
+    void enviarLinkRecuperacion(EnviarLinkRecuPassDTO enviarLinkRecuPassDTO) throws Exception;
 }

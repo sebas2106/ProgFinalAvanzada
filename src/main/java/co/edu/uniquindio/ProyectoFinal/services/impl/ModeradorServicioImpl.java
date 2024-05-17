@@ -89,7 +89,7 @@ public class ModeradorServicioImpl implements IModeradorServicio {
 
     @Override
     public List<Negocio> filtrarNegocioEstado(ObtenerNegocioEstadoRevDTO obtenerNegocioEstadoDTO) throws Exception {
-        Optional<List<Negocio>> negociosListOptional = negocioRepo.findByEstadoRevisionAndEstadoReg(obtenerNegocioEstadoDTO.esadoRevision(),EstadoRegistro.ACTIVO);
+        Optional<List<Negocio>> negociosListOptional = negocioRepo.findByEstadoRevisionAndEstadoReg(obtenerNegocioEstadoDTO.estadoRevision(),EstadoRegistro.ACTIVO);
         if (negociosListOptional.isEmpty()) {
             throw new Exception("No se ha encontrado ningun negocio en este estado de revision");
         }
@@ -116,6 +116,13 @@ public class ModeradorServicioImpl implements IModeradorServicio {
             throw new Exception("No se han encontradorevisiones realizadas por esste moderador");
         }
         return null;
+    }
+
+    @Override
+    public List<HistorialRevision> obtenerRevisionesByEstado() throws Exception {
+        Optional<List<HistorialRevision>> historialrevisionesMod = historialRepo.findHistorialRevisionByEstadoRevision(EstadoRevision.PENDIENTE);
+        List<HistorialRevision>listHistRev=historialrevisionesMod.get();
+        return listHistRev;
     }
 
     private boolean existeIDNegocio(String cod) {

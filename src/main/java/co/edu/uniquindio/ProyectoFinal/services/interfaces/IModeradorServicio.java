@@ -17,4 +17,6 @@ public interface IModeradorServicio {
     Usuario obtenerModerador(ObtenerModeradorIdentiDTO identModerad)throws Exception;
 
     List<HistorialRevision>obtenerHistorialRevisionesModerador(ObtenerHistorialRevisionModerador obtenerHistorial)throws Exception;
+
+    List<HistorialRevision>obtenerRevisionesByEstado()throws Exception;
 }

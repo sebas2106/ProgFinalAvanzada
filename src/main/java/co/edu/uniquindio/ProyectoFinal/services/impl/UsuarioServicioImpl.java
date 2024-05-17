@@ -157,10 +157,7 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         usuarioRepo.save(user);
     }
 
-    @Override
-    public void iniciarSesion(InicioSesionDTO inicioSesionDTO) throws Exception {
 
-    }
 
     @Override
     public void enviarLinkRecuperacion(String email) throws Exception {
@@ -280,7 +277,73 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     }
 
     @Override
-    public void recuperarContrasena(RecuperacionPasswordDTO rP) throws Exception {
+    public Cuenta crerCuenta(CrearCuentaDTO crearCuentaDTO) throws Exception {
+        //Buscamos el usuario que se quiere actualizar
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(crearCuentaDTO.idUsuario());
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario");
+        }
+        Usuario encontrado = optionalUser.get();
+        if (encontrado.getCuentaUsuario() != null) {
+            throw new Exception("El usuario tiene cuenta creada: " + encontrado.getCuentaUsuario().getNombreCuenta());
+        }
+        Cuenta nuevaCuenta = new Cuenta();
+        nuevaCuenta.setNombreCuenta(crearCuentaDTO.nombre());
+        nuevaCuenta.setEstadoCuenta(EstadoCuenta.ACTIVA);
+
+        encontrado.setCuentaUsuario(nuevaCuenta);
+
+        Usuario nuevo = usuarioRepo.save(encontrado);
+        if (nuevo == null) {
+            throw new Exception("No se guardaron cambios");
+        }
+
+        return nuevo.getCuentaUsuario();
+    }
+
+    @Override
+    public Cuenta actualizarCuenta(ActualizarCuentaDTO actualizarCuenta) throws Exception {
+        //Buscamos el usuario que se quiere actualizar
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(actualizarCuenta.idUsuario());
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario a actualizar");
+        }
+        Usuario encontrado = optionalUser.get();
+        if (encontrado.getCuentaUsuario() == null) {
+            throw new Exception("El usuario no tiene cuenta creada");
+        }
+        encontrado.getCuentaUsuario().setNombreCuenta(actualizarCuenta.nuevoNombre());
+
+        Usuario nuevo = usuarioRepo.save(encontrado);
+        if (nuevo == null) {
+            throw new Exception("No se guardaron cambios");
+        }
+
+        return nuevo.getCuentaUsuario();
+    }
+
+    @Override
+    public void eliminarCuenta(EliminarCuentaDTO eliminarCuenta) throws Exception {
+        //Buscamos el usuario que se quiere actualizar
+        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(eliminarCuenta.idUsuario());
+        //Si no se encontró el usuario, lanzamos una excepción
+        if (optionalUser.isEmpty()) {
+            throw new Exception("No se encontró el usuario a actualizar");
+        }
+        Usuario encontrado = optionalUser.get();
+        if (encontrado.getCuentaUsuario() == null) {
+            throw new Exception("El usuario no tiene cuenta creada");
+        }
+        encontrado.getCuentaUsuario().setEstadoCuenta(EstadoCuenta.INACTIVA);
+
+        //INACTIVAR NEGOCIOS
+
+        Usuario nuevo = usuarioRepo.save(encontrado);
+        if (nuevo == null) {
+            throw new Exception("No se guardaron cambios");
+        }
 
     }
 
@@ -306,6 +369,7 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
         return nuevoDetalleUsuario;
     }
 
+
     @Override
     public String crearNegocio(CrearLugarDTO cL) throws Exception {
         return negocioServicio.crearNegocio(cL);
@@ -320,12 +384,10 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     public String eliminarNegocio(EliminarLugarDTO eL) throws Exception {
         return negocioServicio.eliminarNegocio(eL);
     }
-
     @Override
     public Negocio obtenerNegocio(String id) throws Exception {
         return negocioServicio.obtenerNegocio(id);
     }
-
     @Override
     public List<Negocio> listarNegociosPropietario(String identificacion) throws Exception {
         return negocioServicio.listarNegociosPropietario(identificacion);
@@ -409,79 +471,8 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     }
 
 
-    @Override
-    public void cambiarContrasena(CambioPasswordDTO cP) throws Exception {
 
-    }
 
-    @Override
-    public Cuenta crerCuenta(CrearCuentaDTO crearCuentaDTO) throws Exception {
-        //Buscamos el usuario que se quiere actualizar
-        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(crearCuentaDTO.idUsuario());
-        //Si no se encontró el usuario, lanzamos una excepción
-        if (optionalUser.isEmpty()) {
-            throw new Exception("No se encontró el usuario");
-        }
-        Usuario encontrado = optionalUser.get();
-        if (encontrado.getCuentaUsuario() != null) {
-            throw new Exception("El usuario tiene cuenta creada: " + encontrado.getCuentaUsuario().getNombreCuenta());
-        }
-        Cuenta nuevaCuenta = new Cuenta();
-        nuevaCuenta.setNombreCuenta(crearCuentaDTO.nombre());
-        nuevaCuenta.setEstadoCuenta(EstadoCuenta.ACTIVA);
 
-        encontrado.setCuentaUsuario(nuevaCuenta);
 
-        Usuario nuevo = usuarioRepo.save(encontrado);
-        if (nuevo == null) {
-            throw new Exception("No se guardaron cambios");
-        }
-
-        return nuevo.getCuentaUsuario();
-    }
-
-    @Override
-    public Cuenta actualizarCuenta(ActualizarCuentaDTO actualizarCuenta) throws Exception {
-        //Buscamos el usuario que se quiere actualizar
-        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(actualizarCuenta.idUsuario());
-        //Si no se encontró el usuario, lanzamos una excepción
-        if (optionalUser.isEmpty()) {
-            throw new Exception("No se encontró el usuario a actualizar");
-        }
-        Usuario encontrado = optionalUser.get();
-        if (encontrado.getCuentaUsuario() == null) {
-            throw new Exception("El usuario no tiene cuenta creada");
-        }
-        encontrado.getCuentaUsuario().setNombreCuenta(actualizarCuenta.nuevoNombre());
-
-        Usuario nuevo = usuarioRepo.save(encontrado);
-        if (nuevo == null) {
-            throw new Exception("No se guardaron cambios");
-        }
-
-        return nuevo.getCuentaUsuario();
-    }
-
-    @Override
-    public void eliminarCuenta(EliminarCuentaDTO eliminarCuenta) throws Exception {
-        //Buscamos el usuario que se quiere actualizar
-        Optional<Usuario> optionalUser = usuarioRepo.findByIdentificacion(eliminarCuenta.idUsuario());
-        //Si no se encontró el usuario, lanzamos una excepción
-        if (optionalUser.isEmpty()) {
-            throw new Exception("No se encontró el usuario a actualizar");
-        }
-        Usuario encontrado = optionalUser.get();
-        if (encontrado.getCuentaUsuario() == null) {
-            throw new Exception("El usuario no tiene cuenta creada");
-        }
-        encontrado.getCuentaUsuario().setEstadoCuenta(EstadoCuenta.INACTIVA);
-
-        //INACTIVAR NEGOCIOS
-
-        Usuario nuevo = usuarioRepo.save(encontrado);
-        if (nuevo == null) {
-            throw new Exception("No se guardaron cambios");
-        }
-
-    }
 }

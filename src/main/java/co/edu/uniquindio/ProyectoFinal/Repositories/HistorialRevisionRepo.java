@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface HistorialRevisionRepo extends MongoRepository<HistorialRevision, String> {
 
 Optional<List<HistorialRevision>>findHistorialRevisionByCodModerador(String idMooderador);
+Optional<List<HistorialRevision>>findHistorialRevisionByEstadoRevision(EstadoRevision estadoRevision);
 Optional<List<HistorialRevision>>findByEstadoRevision(EstadoRevision estadoRevision);
 
 }

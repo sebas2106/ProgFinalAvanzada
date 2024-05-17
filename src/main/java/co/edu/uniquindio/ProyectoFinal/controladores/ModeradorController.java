@@ -1,17 +1,18 @@
 package co.edu.uniquindio.ProyectoFinal.controladores;
 
-import co.edu.uniquindio.ProyectoFinal.DTO.ActualizarLugarDTO;
-import co.edu.uniquindio.ProyectoFinal.DTO.DarEstadoNegocioDTO;
-import co.edu.uniquindio.ProyectoFinal.DTO.MensajeDTO;
+import co.edu.uniquindio.ProyectoFinal.DTO.*;
+import co.edu.uniquindio.ProyectoFinal.model.HistorialRevision;
+import co.edu.uniquindio.ProyectoFinal.model.Negocio;
+import co.edu.uniquindio.ProyectoFinal.model.Usuario;
+import co.edu.uniquindio.ProyectoFinal.model.enums.EstadoRevision;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.IModeradorServicio;
 import co.edu.uniquindio.ProyectoFinal.services.interfaces.INegocioServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/moderador")
@@ -24,5 +25,28 @@ public class ModeradorController {
         moderadorServicio.ponerEstadoNegocio(estado);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Se ha dado un estado al negocio")
         );
+    }
+    @GetMapping("/filtrarNegocioEstado/{estado}")
+    public ResponseEntity<MensajeDTO<List<Negocio>>> obtenerNegocio(@PathVariable ObtenerNegocioEstadoRevDTO obtenerNegocioEstadoDTO) throws Exception{
+        EstadoRevision estado=obtenerNegocioEstadoDTO.estadoRevision();
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                moderadorServicio.filtrarNegocioEstado(obtenerNegocioEstadoDTO) ) );
+    }
+    @GetMapping("/obtenerModerador/{identificacion}")
+    public ResponseEntity<MensajeDTO<Usuario>> obtenerModerador(@PathVariable ObtenerModeradorIdentiDTO identModerad) throws Exception{
+        String identificacion=identModerad.identModerador();
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                moderadorServicio.obtenerModerador(identModerad) ) );
+    }
+
+    @GetMapping("/obtenerHistorialRevisionesModerador")
+    public ResponseEntity<MensajeDTO<List<HistorialRevision>>> obtenerHistorialRevisionesModerador(@Valid @RequestBody ObtenerHistorialRevisionModerador obtenerHistorial) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                moderadorServicio.obtenerHistorialRevisionesModerador(obtenerHistorial) ) );
+    }
+    @GetMapping("/obtenerRevisionesByEstado/{estadoRevision}")
+    public ResponseEntity<MensajeDTO<List<HistorialRevision>>> obtenerRevisionesByEstado(@PathVariable EstadoRevision estadoRevision) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                moderadorServicio.obtenerRevisionesByEstado() ) );
     }
 }
